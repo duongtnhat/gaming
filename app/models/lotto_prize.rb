@@ -1,0 +1,2 @@
+class LottoPrize < ApplicationRecord
+end

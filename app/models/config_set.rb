@@ -1,0 +1,2 @@
+class ConfigSet < ApplicationRecord
+end
