@@ -49,6 +49,8 @@ gem 'whenever', require: false
 gem 'fugit'
 gem 'kaminari'
 gem 'jsonapi-serializer'
+gem 'ed25519'
+gem 'bcrypt_pbkdf'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -58,5 +60,10 @@ end
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   gem 'spring'
+  gem "capistrano", "~> 3.10", require: false
+  gem "capistrano-rails", "~> 1.6", require: false
+  gem 'capistrano-bundler'
+  gem 'capistrano-passenger'
+  gem 'capistrano-rbenv', github: 'capistrano/rbenv', require: false
 end
 
