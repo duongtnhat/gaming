@@ -5,4 +5,5 @@ class User < ApplicationRecord
          :rememberable,
          :validatable,
          :api
+  has_many :accounts
 end

@@ -46,6 +46,9 @@ gem 'sandi_meter' # Checks for compliance to Sandi Metz's rules for developers.
 gem 'simplecov' #Enables coverage analysis of code.
 
 gem 'whenever', require: false
+gem 'fugit'
+gem 'kaminari'
+gem 'jsonapi-serializer'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

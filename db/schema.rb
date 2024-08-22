@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_14_144513) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_19_175106) do
   create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.decimal "balance", precision: 10
     t.bigint "currency_id", null: false
@@ -99,14 +99,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_14_144513) do
 
   create_table "lotto_inst", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "lotto_schema_id", null: false
-    t.string "hash"
+    t.string "inst_hash"
     t.string "sand"
     t.string "prize"
-    t.string "current_pot"
     t.string "status"
     t.datetime "end_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "current_pot", precision: 15, scale: 8
     t.index ["lotto_schema_id"], name: "index_lotto_inst_on_lotto_schema_id"
   end
 
@@ -115,20 +115,22 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_14_144513) do
     t.string "code"
     t.integer "fill"
     t.integer "ordering"
-    t.decimal "prize_value", precision: 10
+    t.decimal "prize_value", precision: 15, scale: 8
     t.string "prize_type"
     t.boolean "enable"
     t.boolean "end_round"
     t.boolean "distribute"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "lotto_schema_id", null: false
     t.index ["code"], name: "index_lotto_prizes_on_code", unique: true
+    t.index ["lotto_schema_id"], name: "index_lotto_prizes_on_lotto_schema_id"
   end
 
   create_table "lotto_schemas", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "code"
-    t.decimal "price", precision: 10
+    t.decimal "price", precision: 15, scale: 8
     t.integer "range_from"
     t.integer "range_to"
     t.integer "win_number"
@@ -136,18 +138,20 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_14_144513) do
     t.string "new_round_at"
     t.string "end_round_at"
     t.string "fee_type"
-    t.decimal "fee_value", precision: 10
-    t.decimal "initial_amount", precision: 10
+    t.decimal "fee_value", precision: 15, scale: 8
+    t.decimal "initial_amount", precision: 15, scale: 8
     t.boolean "enable"
     t.bigint "currency_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "game_type"
+    t.decimal "previous_game", precision: 15, scale: 8
     t.index ["currency_id"], name: "index_lotto_schemas_on_currency_id"
   end
 
   create_table "transactions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "trans_type"
-    t.decimal "amount", precision: 10
+    t.decimal "amount", precision: 15, scale: 8
     t.bigint "currency_id", null: false
     t.bigint "user_id", null: false
     t.bigint "account_id", null: false
@@ -156,12 +160,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_14_144513) do
     t.datetime "ext_tran_date"
     t.string "ext_tran_id"
     t.string "status"
-    t.decimal "before_balance", precision: 10
-    t.decimal "after_balance", precision: 10
+    t.decimal "before_balance", precision: 15, scale: 8
+    t.decimal "after_balance", precision: 15, scale: 8
     t.string "game_session"
     t.string "source"
     t.integer "original_trans_id"
-    t.decimal "original_amount", precision: 10
+    t.decimal "original_amount", precision: 15, scale: 8
     t.bigint "original_currency_id"
     t.string "custom_info_01"
     t.string "custom_info_02"
@@ -197,6 +201,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_14_144513) do
   add_foreign_key "docs", "doc_types"
   add_foreign_key "docs", "users"
   add_foreign_key "lotto_inst", "lotto_schemas"
+  add_foreign_key "lotto_prizes", "lotto_schemas"
   add_foreign_key "lotto_schemas", "currencies"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "currencies"

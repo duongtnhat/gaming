@@ -5,7 +5,7 @@ class CreateLottoPrizes < ActiveRecord::Migration[7.0]
       t.string :code
       t.integer :fill
       t.integer :ordering
-      t.decimal :prize_value
+      t.decimal :prize_value, precision: 15, scale: 8
       t.string :prize_type
       t.boolean :enable
       t.boolean :end_round

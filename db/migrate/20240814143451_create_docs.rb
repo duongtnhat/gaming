@@ -10,7 +10,7 @@ class CreateDocs < ActiveRecord::Migration[7.0]
       t.string :comment
       t.string :source
       t.integer :source_id
-      t.decimal :amount
+      t.decimal :amount, precision: 15, scale: 8
       t.references :currency, null: false, foreign_key: true
       t.datetime :approved_at
 

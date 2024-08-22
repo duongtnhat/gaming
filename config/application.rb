@@ -23,17 +23,10 @@ module Gaming
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
 
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
-
-    # Only loads a smaller set of middleware suitable for API only apps.
-    # Middleware like session, flash, cookies can be added back manually.
-    # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    config.active_record.encryption.primary_key = "jCiomuccXDg4kkCGDZ3gNGSVU1N1iKw8"
+    config.active_record.encryption.deterministic_key = "R0c4SmTofxtIhQhYVNI1qoHYbROJBke7"
+    config.active_record.encryption.key_derivation_salt = "yOUrYIeTyIHR3WY46HShDBd570sEt09Y"
   end
 end
