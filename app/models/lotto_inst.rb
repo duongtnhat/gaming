@@ -1,6 +1,7 @@
 class LottoInst < ApplicationRecord
   self.table_name = "lotto_inst"
   belongs_to :lotto_schema
+  has_many :lotto_prizes, -> { order(ordering: :asc) }, through: :lotto_schema
   encrypts :sand
   encrypts :prize
 
@@ -8,10 +9,15 @@ class LottoInst < ApplicationRecord
 
   scope :active_game, ->(code, limit, page) do
     joins(:lotto_schema)
-      .includes(:lotto_schema)
+      .includes(:lotto_schema, :lotto_prizes)
       .where(lotto_schema: {enable:true, code: code})
       .order(end_at: :desc)
       .page(page).per(limit)
+  end
+
+  scope :get_game_by_id, ->(id) do
+    includes(:lotto_schema, :lotto_prizes)
+      .where(id: id).first
   end
 
   def process_end_game

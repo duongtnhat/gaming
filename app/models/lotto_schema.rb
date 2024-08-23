@@ -23,6 +23,7 @@ class LottoSchema < ApplicationRecord
     end
     instance.inst_hash = Digest::MD5.hexdigest("%s%s" % [instance.prize, instance.sand])
     instance.end_at = Fugit::Cron.new(self.end_round_at).next_time(DateTime.current).to_t
+    instance.end_at = DateTimeUtil.start_of :minute, instance.end_at
     instance.save!
   end
 
