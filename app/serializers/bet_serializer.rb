@@ -16,6 +16,12 @@ class BetSerializer
   attribute :bet_value do |object|
     object.custom_info_05
   end
+  attribute :game_win do |object|
+    object.custom_info_04
+  end
+  attribute :win_amount do |object|
+    object.custom_info_03
+  end
 
   attribute :trans_type
   attribute :comment

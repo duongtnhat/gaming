@@ -63,7 +63,8 @@ class LottoPrize < ApplicationRecord
                               after_balance: account.balance + amount
       account.balance += amount
       trans.save!
-      transaction.update! original_trans_id: trans.id, custom_info_04: self.id.to_s
+      transaction.update! original_trans_id: trans.id, custom_info_04: self.id.to_s,
+                          custom_info_03: amount
       account.save!
     rescue Error
       raise ActiveRecord::Rollback
