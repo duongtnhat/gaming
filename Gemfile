@@ -51,7 +51,6 @@ gem 'kaminari'
 gem 'jsonapi-serializer'
 gem 'ed25519'
 gem 'bcrypt_pbkdf'
-gem 'rack-cors'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
