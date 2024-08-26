@@ -47,4 +47,8 @@ class Transaction < ApplicationRecord
       raise ActiveRecord::Rollback
     end
   end
+
+  def game
+    LottoInst.find(self.source)
+  end
 end

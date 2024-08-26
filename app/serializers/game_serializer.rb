@@ -6,7 +6,7 @@ class GameSerializer
   attribute :end_at
   attribute :created_at
 
-  attribute :prize do |object|
+  attribute :win_prize do |object|
     object.prize if object.done?
   end
   attribute :sand do |object|

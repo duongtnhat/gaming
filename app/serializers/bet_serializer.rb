@@ -23,6 +23,16 @@ class BetSerializer
     object.custom_info_03
   end
 
+  attribute :created_at do |object|
+    object&.game&.created_at
+  end
+  attribute :win_prize do |object|
+    object&.game&.prize
+  end
+  attribute :current_pot do |object|
+    object&.game&.current_pot
+  end
+
   attribute :trans_type
   attribute :comment
   attribute :error
