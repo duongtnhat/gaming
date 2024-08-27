@@ -20,7 +20,7 @@ class BetSerializer
     object.custom_info_04
   end
   attribute :win_amount do |object|
-    object.custom_info_03
+    object.custom_info_03 || "0"
   end
 
   attribute :created_at do |object|
