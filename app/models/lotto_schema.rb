@@ -5,7 +5,7 @@ class LottoSchema < ApplicationRecord
   has_many :lotto_prize
 
   enum :fee_type, { percent: "PERCENT", fixed: "FIXED" }
-  enum :game_type, { jackpot: "JACKPOT", tai_xiu: "TAIXIU" }
+  enum :game_type, { jackpot: "JACKPOT", tai_xiu: "TAIXIU", keno: "KENO" }
   def new_instance
     instance = self.lotto_inst.build(status: :active)
     instance.prize = RandomUtil.random(

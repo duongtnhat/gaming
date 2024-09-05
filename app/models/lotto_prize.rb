@@ -7,7 +7,8 @@ class LottoPrize < ApplicationRecord
     schema = self.lotto_schema
     if schema.jackpot?
       win = game.prize.split(",")
-      curr = transaction.custom_info_05.split(",")
+      curr = transaction.custom_info_05.split(",").uniq
+      return false if (win.size != curr.size)
       not_match = (win-curr).size
       return self.fill <= schema.win_number - not_match
     end
@@ -16,11 +17,18 @@ class LottoPrize < ApplicationRecord
       sum = win.split(",").map(&:to_i).sum
       if transaction.custom_info_05 == "0" and sum <= 10
         return true
-      elsif transaction.custom_info_05 == "0" and sum > 10
+      elsif transaction.custom_info_05 == "1" and sum > 10
         return true
       else
         return false
       end
+    end
+    if schema.keno?
+      curr = transaction.custom_info_05.split(",").uniq
+      return false if self.prize_length != curr.size
+      win = game.prize.split(",")
+      match_number = curr.select {|e| win.include?(e) }
+      return match_number == self.fill
     end
     false
   rescue Error

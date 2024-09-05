@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_19_175106) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_04_170307) do
   create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.decimal "balance", precision: 10
     t.bigint "currency_id", null: false
@@ -123,6 +123,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_19_175106) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "lotto_schema_id", null: false
+    t.integer "prize_length"
     t.index ["code"], name: "index_lotto_prizes_on_code", unique: true
     t.index ["lotto_schema_id"], name: "index_lotto_prizes_on_lotto_schema_id"
   end
