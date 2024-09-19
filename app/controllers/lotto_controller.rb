@@ -8,7 +8,7 @@ class LottoController < ApplicationController
     if user_id.present?
       @ticket_count = Transaction.ticket_count(user_id, @active_game.pluck(:id)).count
       @active_game.each do |game|
-        game.ticket_count = @ticket_count[game.id]
+        game.ticket_count = @ticket_count[game.id.to_s]
       end
     end
     success(@active_game, GameSerializer)
