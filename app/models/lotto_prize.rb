@@ -3,7 +3,7 @@ class LottoPrize < ApplicationRecord
 
   enum :prize_type, { get_all: "ALL", fixed_value: "FIXED", rate: "RATE" }
 
-  attr :quantity
+  attr_accessor :quantity
 
   def win_transaction? transaction, game
     schema = self.lotto_schema
