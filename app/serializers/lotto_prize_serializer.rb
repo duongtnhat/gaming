@@ -4,4 +4,7 @@ class LottoPrizeSerializer
   attribute :prize do |object|
     object.prize_value
   end
+  attribute :quantity do |object|
+    object.quantity
+  end
 end

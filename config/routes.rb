@@ -7,5 +7,6 @@ Rails.application.routes.draw do
     get "/player/account", to: "player#account"
     get "/player/bet", to: "player#my_bet"
     post "/player/bet", to: "player#place_bet"
+    post "/player/bet_batch", to: "player#place_bet_batch"
   end
 end

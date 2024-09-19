@@ -9,6 +9,10 @@ class LottoController < ApplicationController
   def game_by_id
     id = params[:id]
     @active_game = LottoInst.get_game_by_id id
+    @win_count = Transaction.win_count id
+    @active_game.lotto_prizes.each do |prize|
+      prize.quantity = @win_count[prize.id.to_s]
+    end
     success(@active_game, GameSerializer)
   end
   def schema_by_code
