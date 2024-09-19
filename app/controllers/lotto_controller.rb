@@ -8,8 +8,8 @@ class LottoController < ApplicationController
   end
   def game_by_id
     id = params[:id]
-    @active_game = LottoInst.get_game_by_id id
-    @win_count = Transaction.win_count id
+    @active_game = LottoInst.get_game_by_id(id).first
+    @win_count = Transaction.win_count(id).count
     @active_game.lotto_prizes.each do |prize|
       prize.quantity = @win_count[prize.id.to_s]
     end

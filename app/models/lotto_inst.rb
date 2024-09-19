@@ -17,7 +17,7 @@ class LottoInst < ApplicationRecord
 
   scope :get_game_by_id, ->(id) do
     includes(:lotto_schema, :lotto_prizes)
-      .where(id: id).first
+      .where(id: id)
   end
 
   def process_end_game

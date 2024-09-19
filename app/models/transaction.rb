@@ -16,9 +16,7 @@ class Transaction < ApplicationRecord
   end
 
   scope :win_count, ->(game_id) do
-    win = Transaction.where(trans_type: :win, source: game_id).pluck :original_trans_id
-    return {} if win.blank?
-    where(id: win).group(:custom_info_04).count
+    where(trans_type: :win, custom_info_05: game_id).group(:source)
   end
 
   scope :place_bet, ->(user, account, game, amount, bet_value) do
