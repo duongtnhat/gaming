@@ -4,6 +4,7 @@ class GameSerializer
   attribute :current_pot
   attribute :status
   attribute :end_at
+  attribute :ticket_count
   attribute :created_at
 
   attribute :win_prize do |object|

@@ -7,12 +7,15 @@ class LottoInst < ApplicationRecord
 
   enum :status, {active: "ACTIVE", done: "DONE"}
 
+  attr_accessor :ticket_count
+
   scope :active_game, ->(code, limit, page) do
-    joins(:lotto_schema)
+    res = joins(:lotto_schema)
       .includes(:lotto_schema, :lotto_prizes)
       .where(lotto_schema: {enable:true, code: code})
       .order(end_at: :desc)
       .page(page).per(limit)
+    res
   end
 
   scope :get_game_by_id, ->(id) do

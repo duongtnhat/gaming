@@ -9,6 +9,11 @@ class Transaction < ApplicationRecord
     approved: "APPROVED", denied: "DENIED", error: "ERROR", in_progress: "IN_PROGRESS"
   }
 
+  scope :ticket_count, ->(user_id, game_list) do
+    where(user_id: user_id, trans_type: :place_bet, source: game_list)
+      .group(:source)
+  end
+
   scope :user_bet, ->(user, game_id) do
     where(user: user, trans_type: :place_bet, source: game_id)
       .includes(:currency)

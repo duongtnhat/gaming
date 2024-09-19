@@ -5,6 +5,6 @@ class LottoPrizeSerializer
     object.prize_value
   end
   attribute :quantity do |object|
-    object.quantity
+    object.quantity || 0
   end
 end

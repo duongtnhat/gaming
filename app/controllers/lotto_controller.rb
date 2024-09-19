@@ -3,7 +3,14 @@ class LottoController < ApplicationController
     code = params[:code]
     limit = params[:limit] || DEFAULT_PAGE_LIMIT
     page = params[:page] || 1
-    @active_game = LottoInst.active_game code, limit, page
+    user_id = params[:user_id]
+    @active_game = LottoInst.active_game(code, limit, page).all
+    if user_id.present?
+      @ticket_count = Transaction.ticket_count(user_id, @active_game.pluck(:id)).count
+      @active_game.each do |game|
+        game.ticket_count = @ticket_count[game.id]
+      end
+    end
     success(@active_game, GameSerializer)
   end
   def game_by_id
