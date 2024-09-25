@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_24_035915) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_25_142501) do
   create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.decimal "balance", precision: 10
     t.bigint "currency_id", null: false
@@ -107,6 +107,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_24_035915) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "current_pot", precision: 15, scale: 8
+    t.datetime "start_time"
     t.index ["lotto_schema_id"], name: "index_lotto_inst_on_lotto_schema_id"
   end
 
@@ -147,6 +148,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_24_035915) do
     t.datetime "updated_at", null: false
     t.string "game_type"
     t.decimal "previous_game", precision: 15, scale: 8
+    t.integer "delay_start"
     t.index ["currency_id"], name: "index_lotto_schemas_on_currency_id"
   end
 

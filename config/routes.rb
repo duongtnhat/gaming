@@ -13,5 +13,6 @@ Rails.application.routes.draw do
     get "/payment/refresh", to: "payment#refresh"
     post "/payment/create", to: "payment#create"
     post "/payout/create", to: "payment#payout"
+    get "/taixiu/live", to: "live#taixiu_live"
   end
 end

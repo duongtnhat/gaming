@@ -13,6 +13,7 @@ class LottoInst < ApplicationRecord
     res = joins(:lotto_schema)
       .includes(:lotto_schema, :lotto_prizes)
       .where(lotto_schema: {enable:true, code: code})
+      .where("start_time <= now()")
       .order(end_at: :desc)
       .page(page).per(limit)
     res

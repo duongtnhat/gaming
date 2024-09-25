@@ -8,10 +8,15 @@ module LottoGenerateJob
 
   def self.perform_end_game
     active_game = LottoInst.where(status: :active)
+    list_game_should_end = []
     active_game.each do |game|
       if (game.end_at - DateTime.current) / 1.minutes <= 1
-        game.process_end_game
+        list_game_should_end << game
+        game.update status: :done
       end
+    end
+    list_game_should_end.each do |game|
+      game.process_end_game
     end
   end
 

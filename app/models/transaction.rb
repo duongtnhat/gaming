@@ -51,6 +51,10 @@ class Transaction < ApplicationRecord
       account.save
       game.update(current_pot: pot)
       trans.save
+      if schema.tai_xiu?
+        $fake_taixiu_cache ||= {small: 0, big: 0, time: DateTime.now}
+        $fake_taixiu_cache[(bet_value.to_i == 0 ? :small : :big)] += amount
+      end
       trans
     rescue Exception
       raise ActiveRecord::Rollback
