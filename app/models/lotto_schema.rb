@@ -8,7 +8,7 @@ class LottoSchema < ApplicationRecord
   enum :game_type, { jackpot: "JACKPOT", tai_xiu: "TAIXIU", keno: "KENO" }
   def new_instance
     instance = self.lotto_inst.build(status: :active)
-    current = DateTime.current + (self.delay_start || 0)
+    current = DateTimeUtil.start_of(:minute, DateTime.current) + (self.delay_start || 0)
     instance.start_time = current
     instance.prize = RandomUtil.random(
       self.range_from..self.range_to,
