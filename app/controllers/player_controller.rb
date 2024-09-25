@@ -60,7 +60,7 @@ class PlayerController < ApplicationController
     res.push("Game not found") if game.blank?
     res.push("Game invalid") unless game.active?
     res.push("Amount invalid") if amount.blank? or amount <= 0
-    res.push("Bet value invalid") if bet_value.blank? or !bet_value.match?(/^([0-9]+)(,[0-9]+)*$/)
+    res.push("Bet value invalid") if bet_value.blank? or !bet_value.to_s.match?(/^([0-9]+)(,[0-9]+)*$/)
     res
   end
 
@@ -73,6 +73,11 @@ class PlayerController < ApplicationController
     res.push("Amount invalid") if amount.blank? or amount <= 0
     res.push("Bet value invalid") unless bet_value.is_a?(Array)
     res.push("Bet value invalid") if bet_value.blank?
+    check = false
+    bet_value.each do |value|
+      check = true unless value.to_s.match?(/^([0-9]+)(,[0-9]+)*$/)
+    end
+    res.push("Bet value invalid") if check
     res
   end
 end

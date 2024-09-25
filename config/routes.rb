@@ -8,5 +8,10 @@ Rails.application.routes.draw do
     get "/player/bet", to: "player#my_bet"
     post "/player/bet", to: "player#place_bet"
     post "/player/bet_batch", to: "player#place_bet_batch"
+    get "/config", to: "config#index"
+    get "/payment", to: "payment#index"
+    get "/payment/refresh", to: "payment#refresh"
+    post "/payment/create", to: "payment#create"
+    post "/payout/create", to: "payment#payout"
   end
 end
