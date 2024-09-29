@@ -20,7 +20,7 @@ class PaymentController < ApplicationController
   def refresh
     @doc = Doc.find params[:id]
     return not_found if @doc.blank?
-    response_success({result: PaymentProcess.process @doc})
+    response_success({result: PaymentProcess.process(@doc)})
   end
 
   def payout

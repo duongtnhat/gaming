@@ -13,6 +13,9 @@ module PaymentProcess
   def self.verify_get_block ext_id
     api_key = Config.get_config "GET_BLOCK_API_KEY", ""
     url = URI("https://go.getblock.io/" + api_key)
+    require "uri"
+    require "json"
+    require "net/http"
     https = Net::HTTP.new(url.host, url.port)
     https.use_ssl = true
     request = Net::HTTP::Post.new(url)
@@ -64,6 +67,8 @@ module PaymentProcess
   end
 
   def self.get_convert_rate from, to
+    require "uri"
+    require "net/http"
     url = URI("https://min-api.cryptocompare.com/data/price?fsym=#{from}&tsyms=#{to}")
     https = Net::HTTP.new(url.host, url.port)
     https.use_ssl = true
