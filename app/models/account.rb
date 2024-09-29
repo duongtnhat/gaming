@@ -9,4 +9,8 @@ class Account < ApplicationRecord
   scope :by_player, -> (player) do
     includes(:currency).where(user: player, account_type: :casa)
   end
+  scope :by_player_and_currency, -> (player, currency) do
+    includes(:currency).where(user: player, account_type: :casa)
+                       .where(currency: {code: currency})
+  end
 end

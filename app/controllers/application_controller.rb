@@ -7,8 +7,16 @@ class ApplicationController < ActionController::API
     render json: response_format(data, 200, "success"), status: 200
   end
 
+  def response_success data
+    render json: response_format(data, 200, "success"), status: 200
+  end
+
   def error data, status, message
     render json: response_format(data, status, message), status: status
+  end
+
+  def not_found
+    render json: response_format({}, 404, "Not found"), status: 404
   end
 
   def response_format data, status, message
