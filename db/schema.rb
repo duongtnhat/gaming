@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_25_142501) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_29_111600) do
   create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.decimal "balance", precision: 10
     t.bigint "currency_id", null: false
@@ -49,6 +49,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_25_142501) do
     t.boolean "enable"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "local_rate", precision: 20, scale: 8, default: "1.0"
     t.index ["code"], name: "index_currencies_on_code", unique: true
   end
 
