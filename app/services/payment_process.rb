@@ -6,7 +6,7 @@ module PaymentProcess
     return false unless doc.pending?
     amount = self.verify_get_block ext_id
     return false if amount.blank? || amount <= 0
-    return false unless self.perform_tranfer doc, amount
+    return false unless self.perform_transfer doc, amount
     true
   end
 

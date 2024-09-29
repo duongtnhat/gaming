@@ -6,7 +6,7 @@ class Doc < ApplicationRecord
   enum :status, {pending: "PENDING", approved: "APPROVED", success: "SUCCESS", deny: "DENY"}
 
   validates :amount, numericality: { other_than: 0 }
-  validates :ext_id, presence: true
+  validates :ext_id, presence: true, uniqueness: true
 
   scope :list_payment, ->(user, page, limit) do
     includes(:doc_type, :currency)
