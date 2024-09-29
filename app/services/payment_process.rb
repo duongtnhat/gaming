@@ -47,7 +47,7 @@ module PaymentProcess
                                user_id: doc.user.id, account_type: :casa)
       end
       before_balance = account.balance
-      doc.update approved_at: DateTime.now
+      doc.update approved_at: DateTime.now, status: :success
       account.balance += main_amount
       return false unless account.save
       transaction = Transaction.new trans_type: :deposit,
