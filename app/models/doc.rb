@@ -14,7 +14,7 @@ class Doc < ApplicationRecord
       .page(page).per(limit)
   end
 
-  def create_deposit(user, amount, currency, ext_id)
+  def self.create_deposit(user, amount, currency, ext_id)
     res = Doc.new
     res.doc_type = DocType.find_by_code('DEPOSIT')
     res.user = user

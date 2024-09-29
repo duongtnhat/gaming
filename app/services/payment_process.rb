@@ -12,10 +12,10 @@ module PaymentProcess
 
   def self.verify_get_block ext_id
     api_key = Config.get_config "GET_BLOCK_API_KEY", ""
-    url = URI("https://go.getblock.io/" + api_key)
     require "uri"
     require "json"
     require "net/http"
+    url = URI("https://go.getblock.io/" + api_key)
     https = Net::HTTP.new(url.host, url.port)
     https.use_ssl = true
     request = Net::HTTP::Post.new(url)
@@ -28,9 +28,10 @@ module PaymentProcess
     })
     response = https.request(request)
     res = JSON.parse response.read_body
-    return 0 if res.result.blank?
-    return 0 if Config.get_config("ETH_DEPOSIT_ADDRESS", "No Address Config") != res.to
-    res.value.to_i(16)
+    return 0 if res["result"].blank?
+    result = res["result"]
+    return 0 if Config.get_config("ETH_DEPOSIT_ADDRESS", "No Address Config") != result["to"]
+    result["value"].to_i(16)
   end
 
   def self.perform_transfer doc, amount
@@ -48,21 +49,22 @@ module PaymentProcess
       before_balance = account.balance
       account.balance += main_amount
       return false unless account.save
-      Transaction.create trans_type: :deposit,
+      transaction = Transaction.new trans_type: :deposit,
                          amount: main_amount,
                          currency: main_currency,
                          original_amount: amount,
                          original_currency_id: origin_curr.id,
-                         user: user,
+                         user: doc.user,
                          account: account,
                          comment: "Deposit for doc " + doc.id.to_s,
                          source: doc.id.to_s,
                          status: :approved,
                          before_balance: before_balance,
-                         after_balance: account.balance
-      account.save
+                         after_balance: account.balance, doc_id: doc.id
+      transaction.save
     rescue Exception
       raise ActiveRecord::Rollback
+      false
     end
   end
 
