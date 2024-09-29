@@ -13,7 +13,7 @@ class PaymentController < ApplicationController
     if @doc.save
       success(@doc, DocSerializer)
     else
-      error({ error: @doc.errors }, 400, "Cannot create payment")
+      error({ error: @doc.errors.details }, 400, "Cannot create payment")
     end
   end
 
