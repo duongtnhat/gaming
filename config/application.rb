@@ -28,5 +28,11 @@ module Gaming
     config.active_record.encryption.primary_key = "jCiomuccXDg4kkCGDZ3gNGSVU1N1iKw8"
     config.active_record.encryption.deterministic_key = "R0c4SmTofxtIhQhYVNI1qoHYbROJBke7"
     config.active_record.encryption.key_derivation_salt = "yOUrYIeTyIHR3WY46HShDBd570sEt09Y"
+
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Flash
+    config.middleware.use Rack::MethodOverride
+    config.middleware.use ActionDispatch::Session::CookieStore, {key: "_gaming_session"}
+
   end
 end

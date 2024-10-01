@@ -6,4 +6,6 @@ class User < ApplicationRecord
          :validatable,
          :api
   has_many :accounts
+
+  enum :role, {admin: "admin", ops: "ops"}
 end

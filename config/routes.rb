@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
+  scope :admin_custom do
+    get '/sign_in', to: "admin_session#get"
+    post '/sign_in', to: "admin_session#post"
+  end
+
   scope :api do
     devise_for :users
     get "/game", to: "lotto#game_by_code"
