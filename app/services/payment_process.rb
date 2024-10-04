@@ -2,16 +2,17 @@
 
 module PaymentProcess
   def self.process doc
-    ext_id = doc.ext_id
     return false unless doc.pending?
-    amount = self.verify_get_block ext_id
+    amount = self.verify_get_block doc
     return false if amount.blank? || amount <= 0
     return false unless self.perform_transfer doc, amount
     true
   end
 
-  def self.verify_get_block ext_id
-    api_key = Config.get_config "GET_BLOCK_API_KEY", ""
+  def self.verify_get_block doc
+    currency = doc.currency.code
+    api_key = Config.get_config "GET_#{currency}_BLOCK_API_KEY", ""
+    return 0 if api_key.blank?
     require "uri"
     require "json"
     require "net/http"
@@ -23,14 +24,15 @@ module PaymentProcess
     request.body = JSON.dump({
       "jsonrpc": "2.0",
       "method": "eth_getTransactionByHash",
-      "params": [ext_id],
+      "params": [doc.ext_id],
       "id": "getblock.io"
     })
     response = https.request(request)
     res = JSON.parse response.read_body
     return 0 if res["result"].blank?
     result = res["result"]
-    return 0 if Config.get_config("ETH_DEPOSIT_ADDRESS", "No Address Config") != result["to"]
+    return 0 if Config.get_config("#{currency}_DEPOSIT_ADDRESS", "No Address Config") != result["to"]
+    doc.source = result["from"]
     result["value"].to_i(16)
   end
 
@@ -61,7 +63,8 @@ module PaymentProcess
                          source: doc.id.to_s,
                          status: :approved,
                          before_balance: before_balance,
-                         after_balance: account.balance, doc_id: doc.id
+                         after_balance: account.balance, doc_id: doc.id,
+                         custom_info_01: rate
       transaction.save
     rescue Exception
       raise ActiveRecord::Rollback

@@ -4,8 +4,11 @@ class Account < ApplicationRecord
 
   validates :balance, numericality: { greater_than_or_equal_to: 0 }
 
-  enum :account_type, { casa: "CASA", gl: "GL" }
+  enum :account_type, { casa: "CASA", gl: "GL", hold: "HOLD" }
 
+  scope :get_hold_account, -> (player) do
+    includes(:currency).where(user: player, account_type: :hold)
+  end
   scope :by_player, -> (player) do
     includes(:currency).where(user: player, account_type: :casa)
   end

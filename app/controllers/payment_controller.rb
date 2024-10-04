@@ -24,5 +24,12 @@ class PaymentController < ApplicationController
   end
 
   def payout
+    @doc = Doc.create_withdraw(current_user, params[:amount], params[:address])
+    if @doc.id.blank?
+      return error({ error: "Unknown error" }, 400, "Cannot create payout")
+    elsif @doc.errors.present?
+      return error({ error: @doc.errors.details }, 400, "Cannot create payout")
+    end
+    success(@doc, DocSerializer)
   end
 end
