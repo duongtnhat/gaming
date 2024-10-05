@@ -4,12 +4,8 @@ class LiveController < ApplicationController
   end
 
   def fake_taixiu
-    taixiu_inst = LottoInst
-      .joins(:lotto_schema)
-      .where(lotto_schema: {game_type: :tai_xiu})
-      .order(created_at: :desc)
-      .first
-    if taixiu_inst.blank? || taixiu_inst.done? || taixiu_inst.start_time < DateTime.current
+    taixiu_inst = LottoInst.joins(:lotto_schema).where(lotto_schema: {game_type: :tai_xiu}).order(created_at: :desc).first
+    if taixiu_inst.blank? || taixiu_inst.done? || taixiu_inst.start_time > DateTime.current
       $fake_taixiu_cache = {small: 0, big: 0, time: DateTime.now}
       return $fake_taixiu_cache
     end
