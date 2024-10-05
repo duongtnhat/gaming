@@ -20,5 +20,6 @@ Rails.application.routes.draw do
     post "/payment/create", to: "payment#create"
     post "/payout/create", to: "payment#payout"
     get "/taixiu/live", to: "live#taixiu_live"
+    get "/health", to: "health#health"
   end
 end
