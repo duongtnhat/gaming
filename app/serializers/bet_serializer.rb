@@ -16,6 +16,9 @@ class BetSerializer
   attribute :bet_value do |object|
     object.custom_info_05
   end
+  attribute :bet_amount do |object|
+    object.amount
+  end
   attribute :game_win do |object|
     object.custom_info_04
   end
