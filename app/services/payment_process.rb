@@ -31,7 +31,9 @@ module PaymentProcess
     res = JSON.parse response.read_body
     return 0 if res["result"].blank?
     result = res["result"]
-    return 0 if Config.get_config("#{currency}_DEPOSIT_ADDRESS", "No Address Config") != result["to"]
+    address = Config.get_config("#{currency}_DEPOSIT_ADDRESS", "No Address Config")
+    address = address.upcase
+    return 0 unless address.eql? result["to"].upcase
     doc.source = result["from"]
     result["value"].to_i(16)
   end
@@ -40,7 +42,7 @@ module PaymentProcess
     main_curr = Config.get_config "MAIN_CURR", "USDT"
     main_currency = Currency.find_by_code main_curr
     origin_curr = doc.currency
-    rate = get_convert_rate origin_curr.code, main_curr
+    rate = self.get_convert_rate origin_curr.code, main_curr
     ActiveRecord::Base.transaction do
       main_amount = amount * rate / origin_curr.local_rate
       account = Account.by_player_and_currency(doc.user, main_curr).first
