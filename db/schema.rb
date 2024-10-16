@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_01_154004) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_15_154613) do
   create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.decimal "balance", precision: 10
     t.bigint "currency_id", null: false
@@ -93,6 +93,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_01_154004) do
     t.datetime "approved_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "chain"
+    t.string "add_info_01"
+    t.string "add_info_02"
+    t.string "add_info_03"
+    t.string "add_info_04"
+    t.string "add_info_05"
     t.index ["currency_id"], name: "index_docs_on_currency_id"
     t.index ["doc_type_id"], name: "index_docs_on_doc_type_id"
     t.index ["user_id"], name: "index_docs_on_user_id"

@@ -11,7 +11,12 @@ module PaymentProcess
 
   def self.verify_get_block doc
     currency = doc.currency.code
-    api_key = Config.get_config "GET_#{currency}_BLOCK_API_KEY", ""
+    curr = Currency.find_by code: currency, enable: true
+    if curr.isCrypto
+      api_key = Config.get_config "GET_#{currency}_BLOCK_API_KEY", ""
+    else
+      api_key = Config.get_config "GET_#{doc.chain}_BLOCK_API_KEY", ""
+    end
     return 0 if api_key.blank?
     require "uri"
     require "json"
@@ -31,18 +36,32 @@ module PaymentProcess
     res = JSON.parse response.read_body
     return 0 if res["result"].blank?
     result = res["result"]
-    address = Config.get_config("#{currency}_DEPOSIT_ADDRESS", "No Address Config")
-    address = address.upcase
-    return 0 unless address.eql? result["to"].upcase
     doc.source = result["from"]
-    result["value"].to_i(16)
+    if curr.isCrypto
+      address = Config.get_config("#{currency}_DEPOSIT_ADDRESS", "No Address Config")
+      address = address.upcase
+      return 0 unless address.eql? result["to"].upcase
+      result["value"].to_i(16)
+    else
+      address = Config.get_config("#{doc.chain}_DEPOSIT_ADDRESS", "No Address Config")
+      get_value_from result["input"], address
+    end
+  end
+
+  def self.get_value_from input, address
+    method = "0xa9059cbb"
+    return 0 unless input.start_with? method
+    input = input.sub(method, "")
+    param = input.each_char.each_slice(64).map(&:join)
+    return 0 unless address.eql? "0x" + param[0].gsub(/\A0+/, "")
+    param[1].to_i(16)
   end
 
   def self.perform_transfer doc, amount
     main_curr = Config.get_config "MAIN_CURR", "USDT"
     main_currency = Currency.find_by_code main_curr
     origin_curr = doc.currency
-    rate = self.get_convert_rate origin_curr.code, main_curr
+    rate = main_currency.isCrypto ? self.get_convert_rate(origin_curr.code, main_curr) : 1
     ActiveRecord::Base.transaction do
       main_amount = amount * rate / origin_curr.local_rate
       account = Account.by_player_and_currency(doc.user, main_curr).first
@@ -75,6 +94,7 @@ module PaymentProcess
   end
 
   def self.get_convert_rate from, to
+    return 1 if from.eql? to
     require "uri"
     require "net/http"
     url = URI("https://min-api.cryptocompare.com/data/price?fsym=#{from}&tsyms=#{to}")

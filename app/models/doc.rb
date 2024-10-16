@@ -46,7 +46,16 @@ class Doc < ApplicationRecord
     res.status = :pending
     res.auth_code = SecureRandom.hex
     res.comment = "Create deposit for account " + user.email
+    currency = currency.upcase.split "_"
+    if currency.size == 2
+      chain = currency[1]
+      currency = currency[0]
+    else
+      chain = nil
+      currency = currency[0]
+    end
     res.currency = Currency.where(code: currency, enable: true).first
+    res.chain = chain
     res
   end
 
