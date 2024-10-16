@@ -1,5 +1,5 @@
 class PaymentController < ApplicationController
-  before_action :authenticate_devise_api_token!
+  before_action :authenticate_devise_api_token!, except: [:create_presale]
 
   def index
     limit = params[:limit] || DEFAULT_PAGE_LIMIT
@@ -10,6 +10,20 @@ class PaymentController < ApplicationController
 
   def create
     @doc = Doc.create_deposit(current_user, params[:amount], params[:currency], params[:ext_id])
+    if @doc.save
+      success(@doc, DocSerializer)
+    else
+      error({ error: @doc.errors.details }, 400, "Cannot create payment")
+    end
+  end
+
+  def presale
+    @doc = Doc.where(action: "PRESALE", ext_id: params[:ext_id]).order(created_at: :desc)
+    success(@doc, DocSerializer)
+  end
+
+  def create_presale
+    @doc = Doc.create_presale(params[:amount], params[:currency], params[:ext_id])
     if @doc.save
       success(@doc, DocSerializer)
     else

@@ -59,6 +59,31 @@ class Doc < ApplicationRecord
     res
   end
 
+  def self.create_presale(amount, currency, ext_id)
+    user = Doc.find_by(action: "PRESALE", ext_id: ext_id)&.user
+    user ||= User.create(email: SecureRandom.hex + '@jpostar.net', password: SecureRandom.hex)
+    res = Doc.new
+    res.doc_type = DocType.find_by_code('PRESALE')
+    res.user = user
+    res.amount = amount
+    res.ext_id = ext_id
+    res.action = "PRESALE"
+    res.status = :pending
+    res.auth_code = SecureRandom.hex
+    res.comment = "Create presale for account " + user.email
+    currency = currency.upcase.split "_"
+    if currency.size == 2
+      chain = currency[1]
+      currency = currency[0]
+    else
+      chain = nil
+      currency = currency[0]
+    end
+    res.currency = Currency.where(code: currency, enable: true).first
+    res.chain = chain
+    res
+  end
+
   def self.create_withdraw(user, amount, address)
     main_curr = Config.get_config "MAIN_CURR", "USDT"
     main_currency = Currency.find_by_code main_curr
