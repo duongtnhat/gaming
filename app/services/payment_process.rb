@@ -81,8 +81,8 @@ module PaymentProcess
     doc.source = result["from"]
     address = Config.get_config("#{currency_chain}_DEPOSIT_ADDRESS", "No Address Config")
     address = address.upcase
-    return 0 unless address.eql? result["to"].upcase
     if curr.isCrypto
+      return 0 unless address.eql? result["to"].upcase
       result["value"].to_i(16)
     else
       get_value_from result["input"], address

@@ -18,12 +18,12 @@ class PaymentController < ApplicationController
   end
 
   def presale
-    @doc = Doc.where(action: "PRESALE", ext_id: params[:ext_id]).order(created_at: :desc)
+    @doc = Doc.where(action: "PRESALE", source: params[:address]).order(created_at: :desc)
     success(@doc, DocSerializer)
   end
 
   def create_presale
-    @doc = Doc.create_presale(params[:amount], params[:currency], params[:ext_id])
+    @doc = Doc.create_presale(params[:address], params[:amount], params[:currency], params[:ext_id])
     if @doc.save
       success(@doc, DocSerializer)
     else

@@ -57,7 +57,7 @@ class Doc < ApplicationRecord
     res
   end
 
-  def self.create_presale(amount, currency, ext_id)
+  def self.create_presale(address, amount, currency, ext_id)
     user = Doc.find_by(action: "PRESALE", ext_id: ext_id)&.user
     user ||= User.create(email: SecureRandom.hex + '@jpostar.net', password: SecureRandom.hex)
     res = Doc.new
@@ -67,6 +67,7 @@ class Doc < ApplicationRecord
     res.ext_id = ext_id
     res.action = "PRESALE"
     res.status = :pending
+    res.source = address
     res.auth_code = SecureRandom.hex
     res.comment = "Create presale for account " + user.email
     res.chain = currency
