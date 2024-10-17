@@ -26,7 +26,7 @@ module PaymentProcess
       main_amount = amount * rate / ruby.local_rate
       account = Account.by_player_and_currency(doc.user, ruby).first
       if account.blank?
-        account = Account.create(balance: 0, currency_id: main_currency.id,
+        account = Account.create(balance: 0, currency_id: ruby.id,
                                  user_id: doc.user.id, account_type: :casa)
       end
       before_balance = account.balance
@@ -35,7 +35,7 @@ module PaymentProcess
       return false unless account.save
       transaction = Transaction.new trans_type: :deposit,
                                     amount: main_amount,
-                                    currency: main_currency,
+                                    currency: ruby,
                                     original_amount: amount,
                                     original_currency_id: origin_curr.id,
                                     user: doc.user,
