@@ -56,11 +56,9 @@ module PaymentProcess
   def self.verify_get_block doc
     currency = doc.currency.code
     curr = Currency.find_by code: currency, enable: true
-    if curr.isCrypto
-      api_key = Config.get_config "GET_#{currency}_BLOCK_API_KEY", ""
-    else
-      api_key = Config.get_config "GET_#{doc.chain}_BLOCK_API_KEY", ""
-    end
+    currency_chain = currency
+    currency_chain = doc.chain unless curr.isCrypto
+    api_key = Config.get_config "GET_#{currency_chain}_BLOCK_API_KEY", ""
     return 0 if api_key.blank?
     require "uri"
     require "json"
@@ -81,13 +79,12 @@ module PaymentProcess
     return 0 if res["result"].blank?
     result = res["result"]
     doc.source = result["from"]
+    address = Config.get_config("#{currency_chain}_DEPOSIT_ADDRESS", "No Address Config")
+    address = address.upcase
+    return 0 unless address.eql? result["to"].upcase
     if curr.isCrypto
-      address = Config.get_config("#{currency}_DEPOSIT_ADDRESS", "No Address Config")
-      address = address.upcase
-      return 0 unless address.eql? result["to"].upcase
       result["value"].to_i(16)
     else
-      address = Config.get_config("#{doc.chain}_DEPOSIT_ADDRESS", "No Address Config")
       get_value_from result["input"], address
     end
   end
@@ -97,7 +94,7 @@ module PaymentProcess
     return 0 unless input.start_with? method
     input = input.sub(method, "")
     param = input.each_char.each_slice(64).map(&:join)
-    return 0 unless address.eql? "0x" + param[0].gsub(/\A0+/, "")
+    return 0 unless address.eql?(("0x" + param[0].gsub(/\A0+/, "")).upcase)
     param[1].to_i(16)
   end
 
