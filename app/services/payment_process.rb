@@ -9,6 +9,50 @@ module PaymentProcess
     true
   end
 
+  def self.process_presale doc
+    return false unless doc.pending? && "PRESALE".eql?(doc.action)
+    amount = self.verify_get_block doc
+    return false if amount.blank? || amount <= 0
+    perform_transfer_presale doc, amount
+  end
+
+  def self.perform_transfer_presale doc, amount
+    main_curr = Config.get_config "MAIN_CURR", "USDT"
+    main_currency = Currency.find_by_code main_curr
+    origin_curr = doc.currency
+    rate = main_currency.isCrypto ? self.get_convert_rate(origin_curr.code, main_curr) : 1
+    ruby = Currency.find_by(code: "RUBY")
+    ActiveRecord::Base.transaction do
+      main_amount = amount * rate / ruby.local_rate
+      account = Account.by_player_and_currency(doc.user, ruby).first
+      if account.blank?
+        account = Account.create(balance: 0, currency_id: main_currency.id,
+                                 user_id: doc.user.id, account_type: :casa)
+      end
+      before_balance = account.balance
+      doc.update approved_at: DateTime.now, status: :success
+      account.balance += main_amount
+      return false unless account.save
+      transaction = Transaction.new trans_type: :deposit,
+                                    amount: main_amount,
+                                    currency: main_currency,
+                                    original_amount: amount,
+                                    original_currency_id: origin_curr.id,
+                                    user: doc.user,
+                                    account: account,
+                                    comment: "Presale for doc " + doc.id.to_s,
+                                    source: doc.id.to_s,
+                                    status: :approved,
+                                    before_balance: before_balance,
+                                    after_balance: account.balance, doc_id: doc.id,
+                                    custom_info_01: rate
+      transaction.save
+    rescue Exception
+      raise ActiveRecord::Rollback
+      false
+    end
+  end
+
   def self.verify_get_block doc
     currency = doc.currency.code
     curr = Currency.find_by code: currency, enable: true
