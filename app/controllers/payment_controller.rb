@@ -31,6 +31,11 @@ class PaymentController < ApplicationController
     end
   end
 
+  def presale_summary
+    @total = Doc.where(status: :success, action: "PRESALE").sum(:add_info_02)
+    response_success({total: @total})
+  end
+
   def refresh
     @doc = Doc.find params[:id]
     return not_found if @doc.blank?

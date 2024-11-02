@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     post "/player/bet_batch", to: "player#place_bet_batch"
     get "/config", to: "config#index"
     get "/presale", to: "payment#presale"
+    get "/presale/summary", to: "payment#presale_summary"
     post "/presale", to: "payment#create_presale"
     get "/payment", to: "payment#index"
     get "/payment/refresh", to: "payment#refresh"

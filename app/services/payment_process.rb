@@ -24,13 +24,18 @@ module PaymentProcess
     ruby = Currency.find_by(code: "RUBY")
     ActiveRecord::Base.transaction do
       main_amount = amount * rate / ruby.local_rate
+      doc.add_info_01 = main_amount
+      doc.add_info_02 = amount * rate
+      doc.add_info_03 = 1
       account = Account.by_player_and_currency(doc.user, ruby).first
       if account.blank?
         account = Account.create(balance: 0, currency_id: ruby.id,
                                  user_id: doc.user.id, account_type: :casa)
       end
       before_balance = account.balance
-      doc.update approved_at: DateTime.now, status: :success
+      doc.approved_at = DateTime.now
+      doc.status = :success
+      doc.save
       account.balance += main_amount
       return false unless account.save
       transaction = Transaction.new trans_type: :deposit,
@@ -110,6 +115,9 @@ module PaymentProcess
         account = Account.create(balance: 0, currency_id: main_currency.id,
                                user_id: doc.user.id, account_type: :casa)
       end
+
+      account.balance = 0 if doc.user.trial?
+
       before_balance = account.balance
       doc.update approved_at: DateTime.now, status: :success
       account.balance += main_amount
@@ -128,6 +136,7 @@ module PaymentProcess
                          after_balance: account.balance, doc_id: doc.id,
                          custom_info_01: rate
       transaction.save
+      doc.user.update trial: false
     rescue Exception
       raise ActiveRecord::Rollback
       false

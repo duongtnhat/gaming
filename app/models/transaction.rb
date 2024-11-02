@@ -49,7 +49,7 @@ class Transaction < ApplicationRecord
               game.current_pot + amount
             end
       account.save
-      game.update(current_pot: pot)
+      game.update(current_pot: pot) unless user.trial?
       trans.save
       if schema.tai_xiu?
         LiveController.fake_taixiu((bet_value.to_i == 0 ? :small : :big), amount)
