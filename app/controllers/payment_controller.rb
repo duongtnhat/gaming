@@ -1,5 +1,5 @@
 class PaymentController < ApplicationController
-  before_action :authenticate_devise_api_token!, except: [:create_presale, :presale]
+  before_action :authenticate_devise_api_token!, except: [:create_presale, :presale, :presale_summary]
 
   def index
     limit = params[:limit] || DEFAULT_PAGE_LIMIT
